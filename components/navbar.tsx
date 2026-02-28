@@ -22,6 +22,7 @@ import {
   BarChart3,
   Shield,
   LogIn,
+  ThumbsUp,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -30,6 +31,7 @@ const navigation = [
   { name: "Services", href: "/services", icon: Building2 },
   { name: "Submit Complaint", href: "/complaint", icon: FileText },
   { name: "Contact", href: "/contact", icon: MessageSquare },
+  { name: "Complaints", href: "/complaints", icon: ThumbsUp },
   { name: "AI Assistant", href: "/ai-chatbot", icon: Bot },
   { name: "Track Complaints", href: "/track", icon: BarChart3 },
   { name: "Admin", href: "/admin", icon: Shield },

@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -37,6 +38,7 @@ import {
   Lightbulb,
   ArrowUpRight,
   ArrowDownRight,
+  LogOut,
 } from "lucide-react"
 
 const statsCards = [
@@ -197,6 +199,35 @@ const priorityColors: Record<string, string> = {
 
 export default function AdminPage() {
   const [statusFilter, setStatusFilter] = useState("all")
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isChecking, setIsChecking] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    const auth = localStorage.getItem("cpss-admin-auth")
+    if (auth !== "true") {
+      router.replace("/admin/login")
+    } else {
+      setIsAuthenticated(true)
+    }
+    setIsChecking(false)
+  }, [router])
+
+  const handleLogout = () => {
+    localStorage.removeItem("cpss-admin-auth")
+    router.push("/admin/login")
+  }
+
+  if (isChecking || !isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Verifying access...</p>
+        </div>
+      </div>
+    )
+  }
 
   const filteredComplaints = statusFilter === "all"
     ? complaints
@@ -213,10 +244,21 @@ export default function AdminPage() {
                 <h1 className="text-2xl font-bold text-primary-foreground sm:text-3xl">Admin Dashboard</h1>
                 <p className="mt-1 text-primary-foreground/70">Complaint management and analytics overview</p>
               </div>
-              <Badge className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/20">
-                <div className="mr-1.5 h-2 w-2 rounded-full bg-success animate-pulse" />
-                Live
-              </Badge>
+              <div className="flex items-center gap-3">
+                <Badge className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/20">
+                  <div className="mr-1.5 h-2 w-2 rounded-full bg-success animate-pulse" />
+                  Live
+                </Badge>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="gap-1.5 border border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+              </div>
             </div>
           </div>
         </div>
